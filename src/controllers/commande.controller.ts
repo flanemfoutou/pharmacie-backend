@@ -1,27 +1,36 @@
-import { Request, Response } from "express";
-import Commande from "../models/commande.model";
-import Stock from "../models/stock.model";
+import { Request, Response, NextFunction } from "express";
+import { Commande } from "../models";
 
-export const createCommande = async (req: Request, res: Response) => {
-  try {
-    const { produitId, quantite_commande, type_produit, prix, fournisseurId } = req.body;
-
-    const stock = await Stock.findOne({ where: { produitId } });
-    if (!stock) return res.status(404).json({ message: "Stock introuvable" });
-    if (stock.quantite_reelle < quantite_commande)
-      return res.status(400).json({ message: "Stock insuffisant pour la commande" });
-
-    stock.quantite_reelle -= quantite_commande;
-    await stock.save();
-
-    const commande = await Commande.create({ produitId, quantite_commande, type_produit, prix, fournisseurId });
-    res.status(201).json(commande);
-  } catch (err) {
-    res.status(500).json({ message: (err as Error).message });
-  }
+export const createCommande = async (req: Request, res: Response, next: NextFunction) => {
+  try { const commande = await Commande.create(req.body); res.status(201).json(commande); } catch (err) { next(err); }
 };
 
-export const getCommandes = async (req: Request, res: Response) => {
-  const commandes = await Commande.findAll();
-  res.json(commandes);
+export const getCommandes = async (req: Request, res: Response, next: NextFunction) => {
+  try { const commandes = await Commande.findAll(); res.json(commandes); } catch (err) { next(err); }
+};
+
+export const getCommandeById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const commande = await Commande.findByPk(req.params.id);
+    if (!commande) return res.status(404).json({ message: "Commande non trouvée" });
+    res.json(commande);
+  } catch (err) { next(err); }
+};
+
+export const updateCommande = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const commande = await Commande.findByPk(req.params.id);
+    if (!commande) return res.status(404).json({ message: "Commande non trouvée" });
+    await commande.update(req.body);
+    res.json(commande);
+  } catch (err) { next(err); }
+};
+
+export const deleteCommande = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const commande = await Commande.findByPk(req.params.id);
+    if (!commande) return res.status(404).json({ message: "Commande non trouvée" });
+    await commande.destroy();
+    res.json({ message: "Commande supprimée" });
+  } catch (err) { next(err); }
 };

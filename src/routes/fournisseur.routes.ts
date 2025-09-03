@@ -1,10 +1,12 @@
 import { Router } from "express";
-import { createFournisseur, getFournisseurs } from "../controllers/fournisseur.controller";
-import { validateFields } from "../middlewares/validateFields.middleware";
+import { createFournisseur, getFournisseurs, getFournisseurById, updateFournisseur, deleteFournisseur } from "../controllers/fournisseur.controller";
 
 const router = Router();
 
-router.post("/", validateFields(["nom_fournisseur", "ville_fournisseur", "telephone_fournisseur"]), createFournisseur);
+router.post("/", createFournisseur);
 router.get("/", getFournisseurs);
+router.get("/:id", getFournisseurById);
+router.put("/:id", updateFournisseur);
+router.delete("/:id", deleteFournisseur);
 
 export default router;

@@ -1,19 +1,47 @@
-import { Request, Response } from "express";
-import Stock from "../models/stock.model";
+import { Request, Response, NextFunction } from "express";
+import { Stock } from "../models";
 
-export const createStock = async (req: Request, res: Response) => {
+// Créer un stock
+export const createStock = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { produitId, type_produit, quantite_reelle, prix_unitaire } = req.body;
-    const prix_total = quantite_reelle * prix_unitaire;
-
-    const stock = await Stock.create({ produitId, type_produit, quantite_reelle, prix_unitaire, prix_total });
+    const stock = await Stock.create(req.body);
     res.status(201).json(stock);
-  } catch (err) {
-    res.status(500).json({ message: (err as Error).message });
-  }
+  } catch (err) { next(err); }
 };
 
-export const getStocks = async (req: Request, res: Response) => {
-  const stocks = await Stock.findAll();
-  res.json(stocks);
+// Récupérer tous les stocks
+export const getStocks = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const stocks = await Stock.findAll();
+    res.json(stocks);
+  } catch (err) { next(err); }
+};
+
+// Récupérer un stock par ID
+export const getStockById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const stock = await Stock.findByPk(req.params.id);
+    if (!stock) return res.status(404).json({ message: "Stock non trouvé" });
+    res.json(stock);
+  } catch (err) { next(err); }
+};
+
+// Mettre à jour un stock
+export const updateStock = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const stock = await Stock.findByPk(req.params.id);
+    if (!stock) return res.status(404).json({ message: "Stock non trouvé" });
+    await stock.update(req.body);
+    res.json(stock);
+  } catch (err) { next(err); }
+};
+
+// Supprimer un stock
+export const deleteStock = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const stock = await Stock.findByPk(req.params.id);
+    if (!stock) return res.status(404).json({ message: "Stock non trouvé" });
+    await stock.destroy();
+    res.json({ message: "Stock supprimé" });
+  } catch (err) { next(err); }
 };

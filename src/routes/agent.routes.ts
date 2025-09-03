@@ -1,16 +1,9 @@
 import { Router } from "express";
-import {
-  createAgent,
-  getAgents,
-  getAgentById,
-  updateAgent,
-  deleteAgent,
-} from "../controllers/agent.controller";
-import { validateFields } from "../middlewares/validateFields.middleware";
+import { createAgent, getAgents, getAgentById, updateAgent, deleteAgent } from "../controllers/agent.controller";
 
 const router = Router();
 
-router.post("/", validateFields(["mat_agent", "nom_prenom", "genre", "telephone"]), createAgent);
+router.post("/", createAgent);
 router.get("/", getAgents);
 router.get("/:id", getAgentById);
 router.put("/:id", updateAgent);

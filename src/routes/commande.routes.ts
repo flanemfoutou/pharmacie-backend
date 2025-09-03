@@ -1,17 +1,12 @@
 import { Router } from "express";
-import { createCommande, getCommandes } from "../controllers/commande.controller";
-import { validateFields } from "../middlewares/validateFields.middleware";
-import { checkStock } from "../middlewares/checkStock.middleware";
+import { createCommande, getCommandes, getCommandeById, updateCommande, deleteCommande } from "../controllers/commande.controller";
 
 const router = Router();
 
-router.post(
-  "/",
-  validateFields(["produitId", "quantite_commande", "type_produit", "prix", "fournisseurId"]),
-  checkStock,
-  createCommande
-);
-
+router.post("/", createCommande);
 router.get("/", getCommandes);
+router.get("/:id", getCommandeById);
+router.put("/:id", updateCommande);
+router.delete("/:id", deleteCommande);
 
 export default router;
