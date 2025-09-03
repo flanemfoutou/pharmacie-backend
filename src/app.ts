@@ -24,12 +24,12 @@ const app = express();
 app.use(express.json());
 
 // Routes
-app.use("/api/agents", agentRoutes);
-app.use("/api/produits", produitRoutes);
-app.use("/api/fournisseurs", fournisseurRoutes);
-app.use("/api/stocks", stockRoutes);
-app.use("/api/commandes", commandeRoutes);
-app.use("/api/ventes", venteRoutes);
+app.use("/api/agent", agentRoutes);
+app.use("/api/produit", produitRoutes);
+app.use("/api/fournisseur", fournisseurRoutes);
+app.use("/api/stock", stockRoutes);
+app.use("/api/commande", commandeRoutes);
+app.use("/api/vente", venteRoutes);
 
 // Middleware global d'erreur
 app.use(errorHandler);

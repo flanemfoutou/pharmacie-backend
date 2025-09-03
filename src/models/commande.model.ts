@@ -1,6 +1,6 @@
 import { DataTypes, Model, Optional } from "sequelize";
 import  sequelize  from "../config/database";
-import Produit from "./produit.model";
+import { Produit } from "./produit.model";
 import Fournisseur from "./fournisseur.model";
 
 // Attributs du modèle
